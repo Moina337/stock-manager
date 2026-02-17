@@ -31,7 +31,6 @@ stock-manager/
 ├── backend/              # API Spring Boot
 ├── frontend/             # Application Angular
 ├── docker-compose.yml    # Orchestration des services
-├── .env.example          # Variables d'environnement
 └── README.md
 ```
 
