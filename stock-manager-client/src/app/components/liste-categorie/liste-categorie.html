@@ -1,0 +1,77 @@
+<div class="space-y-6 max-w-5xl mx-auto mt-8">
+  <!-- Barre d'actions -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+    <div class="relative flex-1 max-w-md">
+      <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+        <i class="fa fa-search text-sm"></i>
+      </span>
+      <input 
+        type="text" 
+        (input)="updateNom($event)"
+        placeholder="Rechercher une catégorie..." 
+        class="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition bg-gray-50/50"
+      >
+    </div>
+    
+    <a routerLink="/ajouter-categorie" class="flex items-center justify-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 font-semibold">
+      <i class="fa fa-plus"></i>
+      <span>Ajouter</span>
+    </a>
+  </div>
+
+  <!-- Table Card -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-gray-50/80 text-gray-500 text-xs uppercase tracking-wider">
+            <th class="px-6 py-4 font-bold text-left">Libellé de la catégorie</th>
+            <th class="px-6 py-4 font-bold text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          @for (cat of categoriesFiltres() | paginate: { itemsPerPage: 4, currentPage: page }; track cat.id) {
+            <tr class="hover:bg-indigo-50/30 transition-colors group">
+              <td class="px-6 py-4">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center mr-3">
+                    <i class="fa fa-folder-o text-xs"></i>
+                  </div>
+                  <span class="font-medium text-gray-700">{{ cat.nom }}</span>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex justify-end gap-2 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                  <a [routerLink]="['/modifier-categorie', cat.id]" 
+                     class="p-2 text-indigo-600 hover:bg-indigo-100 rounded-lg transition" title="Modifier">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                  <button (click)="supprimerCategorie(cat.id!)" 
+                          class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition" title="Supprimer">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="2" class="px-6 py-12 text-center text-gray-400">
+                <i class="fa fa-folder-open-o text-4xl mb-3 block opacity-20"></i>
+                Aucune catégorie trouvée.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination stylisée -->
+    <div class="p-4 border-t border-gray-50 flex justify-center custom-pagination">
+      <pagination-controls 
+        (pageChange)="page = $event"
+        previousLabel="Précédent"
+        nextLabel="Suivant">
+      </pagination-controls>
+    </div>
+  </div>
+</div>

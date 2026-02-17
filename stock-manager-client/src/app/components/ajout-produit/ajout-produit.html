@@ -1,0 +1,91 @@
+<div class="max-w-2xl mx-auto ">
+  <!-- En-tête -->
+  <div class="mb-8 text-center">
+    <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Ajouter un nouveau produit</h2>
+    <p class="text-gray-500 mt-2">Remplissez les informations pour enrichir votre catalogue.</p>
+  </div>
+
+  <!-- Formulaire Carte -->
+  <form (submit)="validerAjout()" enctype="multipart/form-data" 
+        class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 space-y-6">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Nom -->
+      <div class="space-y-2">
+        <label for="nom" class="text-sm font-semibold text-gray-700 ml-1">Nom du produit</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+            <i class="fa fa-tag text-xs"></i>
+          </span>
+          <input type="text" id="nom" name="nom" [(ngModel)]="nouveauProduit.nom" required
+                 class="block w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-400"
+                 placeholder="Ex: Ordinateur Dell">
+        </div>
+      </div>
+
+      <!-- Prix -->
+      <div class="space-y-2">
+        <label for="prix" class="text-sm font-semibold text-gray-700 ml-1">Prix du produit</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+            <i class="fa fa-eur text-xs"></i>
+          </span>
+          <input type="number" id="prix" name="prix" [(ngModel)]="nouveauProduit.prix" required
+                 class="block w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                 placeholder="0.00">
+        </div>
+      </div>
+    </div>
+
+    <!-- Catégorie -->
+    <div class="space-y-2">
+      <label for="categorie" class="text-sm font-semibold text-gray-700 ml-1">Catégorie</label>
+      <select id="categorie" name="categorieId" [(ngModel)]="nouveauProduit.categorieId" required
+              class="block w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer">
+        <option [value]="undefined" disabled>Sélectionnez une catégorie</option>
+        @for (cat of categories; track cat.id) {
+          <option [value]="cat.id">{{ cat.nom }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Zone Upload Image -->
+    <div class="space-y-2">
+      <label class="text-sm font-semibold text-gray-700 ml-1">Image du produit</label>
+      <div class="flex items-center justify-center w-full">
+        <label for="image" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
+          <div class="flex flex-col items-center justify-center pt-5 pb-6">
+            <i class="fa fa-cloud-upload text-2xl text-gray-400 mb-2"></i>
+            <p class="text-sm text-gray-500">Cliquez pour ajouter une image</p>
+            <p class="text-xs text-gray-400 uppercase">PNG, JPG ou WEBP</p>
+          </div>
+          <input id="image" type="file" class="hidden" (change)="onFileSelected($event)" accept="image/*" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Aperçu de l'image -->
+    @if (imagePreview) {
+      <div class="relative w-full max-w-[200px] mx-auto group">
+        <img [src]="imagePreview" alt="Aperçu" class="rounded-xl shadow-md border-2 border-white">
+        <button type="button" (click)="supprimerImage()" 
+                class="absolute -top-2 -right-2 bg-red-500 text-white w-8 h-8 rounded-full shadow-lg hover:bg-red-600 transition-transform hover:scale-110 flex items-center justify-center">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+    }
+
+    <!-- Boutons Actions -->
+    <div class="pt-4 flex flex-col sm:flex-row gap-3">
+      <button type="submit" 
+              class="flex-1 bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95 flex items-center justify-center gap-2">
+        <i class="fa fa-check"></i>
+        Enregistrer le produit
+      </button>
+      <button type="button" (click)="resetForm()"
+              class="px-6 py-3 bg-gray-100 text-gray-600 font-semibold rounded-xl hover:bg-gray-200 transition-all">
+        Annuler
+      </button>
+    </div>
+  </form>
+</div>

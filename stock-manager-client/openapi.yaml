@@ -1,0 +1,461 @@
+openapi: 3.0.3
+
+info:
+  title: API Gestion Produits
+  description: CRUD sécurisé avec Spring Security et JWT
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+
+security:
+  - bearerAuth: []
+
+paths:
+
+
+  /auth/login:
+    post:
+      summary: Authentification utilisateur
+      operationId: login
+      tags: [Auth]
+      security: []   # endpoint public
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequestDTO'
+      responses:
+        200:
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponseDTO'
+
+  /auth/registrer:
+    post:
+      summary: Inscription de l'utilisateur
+      operationId: registerUser
+      tags: [Auth]
+      security: []   # endpoint public
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilisateurDTO'
+      responses:
+        201:
+          description: Utilisateur créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtilisateurDTO'
+  
+
+  /utilisateur:
+    get:
+      summary: Affiche tous les utilisateurs
+      operationId: listeUtilisateur
+      tags: [Utilisateur]
+      responses:
+        '200':
+          description: Liste des utilisateurs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UtilisateurDTO'
+
+  /utilisateur/{id}:
+    get:
+      summary: Affiche un utilisateur par ID
+      operationId: getUtilisateurById
+      tags:
+        - Utilisateur
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Utilisateur trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtilisateurDTO'
+        '404':
+          description: Utilisateur non trouvé
+      
+    put:
+      summary: Modification de l'utilisateur
+      operationId: ModifierUtilisateur
+      tags:
+        - Utilisateur
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilisateurUpdateDTO'
+      responses:
+        200:
+          description: Utilisateur modifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtilisateurDTO'
+
+    delete:
+      summary: Supprime un utilisateur par ID
+      operationId: deleteUtilisateur
+      tags:
+        - Utilisateur
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Utilisateur supprimé avec succès
+        '404':
+          description: Utilisateur non trouvé
+
+
+
+  /categories:
+    get:
+      summary: Liste des catégories
+      operationId: listCategories
+      tags: [Categorie]
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategorieDTO'
+    
+    post:
+      summary: Créer une categorie
+      operationId: ajoutCategorie
+      tags: [Categorie]
+      requestBody:
+        required: true
+        content:
+         application/json:
+            schema:
+              $ref: '#/components/schemas/CategorieDTO'
+      responses:
+        201:
+          description: categorie créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorieDTO' 
+                
+  /categories/{id}:
+    get:
+      summary: Détail d’une categorie
+      operationId: afficheCategorieParId
+      tags: [Categorie]
+      parameters: # On peut mettre les paramètres ici ou au niveau du path
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorieDTO'
+
+    put:
+      summary: Modifier une categorie
+      operationId: modifierCategorie
+      tags: [Categorie]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategorieUpdateDTO'
+      responses:
+        200:
+          description: categorie modifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorieDTO'
+
+    delete:
+      summary: Supprimer une categorie
+      operationId: supprimerCategorie
+      tags: [Categorie]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Supprimé
+              
+
+
+  /produits:
+    get:
+      summary: Liste des produits
+      operationId: listrTousProduits
+      tags: [Produits]
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProduitDTO'
+
+    post:
+      summary: Créer un produit avec une image
+      operationId: ajouterProduit
+      tags: [Produits]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                # Partie 1 : Le DTO (données du produit)
+                produitAjoutDTO:
+                  $ref: '#/components/schemas/ProduitAjoutDTO'
+                # Partie 2 : Le fichier image (binaire)
+                image:
+                  type: string
+                  format: binary
+            encoding:
+              produitAjoutDTO:
+                contentType: application/json
+      responses:
+        201:
+          description: Produit créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProduitDTO'
+
+  /produits/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: Détail d’un produit
+      operationId: afficherProduitParId
+      tags: [Produits]
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProduitDTO'
+
+    put:
+      summary: Modifier un produit avec une nouvelle image (optionnelle)
+      operationId: ModifierProduit
+      tags: [Produits]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                # Les données à modifier
+                produitUpdateDTO:
+                  $ref: '#/components/schemas/ProduitUpdateDTO'
+                # Le nouveau fichier image (optionnel)
+                image:
+                  type: string
+                  format: binary
+            encoding:
+              produitUpdateDTO:
+                contentType: application/json
+      responses:
+        200:
+          description: Produit modifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProduitDTO'
+
+    delete:
+      summary: Supprimer un produit
+      operationId: supprimerProduit
+      tags: [Produits]
+      responses:
+        204:
+          description: Supprimé
+
+
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+
+  schemas:
+
+    UtilisateurDTO:
+      type: object
+      required:
+        - nom
+        - email
+        - password
+      properties:
+        id:
+          type: integer
+        nom:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          
+    UtilisateurUpdateDTO:
+      type: object
+      required:
+        - nom
+        - email
+      properties:
+        nom:
+          type: string
+        email:
+          type: string
+          format: email
+     
+    
+    ProduitDTO:
+      type: object
+      required:
+        - nom
+        - prix
+        - categorieId
+      properties:
+        id:
+          type: integer
+        nom:
+          type: string
+        prix:
+          type: number
+          format: double
+        categorieId:
+          type: integer
+        categorie:
+          $ref: '#/components/schemas/CategorieDTO'
+        image:
+          type: string
+
+    CategorieDTO:
+      type: object
+      required:
+        - nom
+      properties:
+        id:
+          type: integer
+        nom:
+          type: string
+          
+    CategorieUpdateDTO:
+      type: object
+      required:
+        - nom
+      properties:
+        nom:
+          type: string      
+
+    LoginRequestDTO:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          format: password
+
+    LoginResponseDTO:
+      type: object
+      properties:
+        token:
+          type: string
+        type:
+          type: string
+          example: Bearer
+    
+    ProduitUpdateDTO:
+      type: object
+      properties:
+        nom:
+          type: string
+        prix:
+          type: number
+        categorieId:
+          type: integer
+        image:
+          type: string
+          
+    ProduitAjoutDTO:
+      type: object
+      required:
+       - nom
+       - prix
+       - categorieId
+      properties:
+        nom:
+          type: string
+        prix:
+          type: number
+        categorieId:
+          type: integer
+              

@@ -1,0 +1,6 @@
+/* Dans liste-categorie.css */
+.custom-pagination ::ng-deep .ngx-pagination .current {
+  background-color: #4f46e5; /* C'est le code HEX de indigo-600 */
+  border-radius: 0.5rem;      /* C'est le rounded-lg */
+  padding: 0.25rem 0.75rem;
+}
