@@ -1,0 +1,43 @@
+services:
+  mysqldb:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=mysqldb
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uuser", "-ppass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app-spring:
+    build: ./stock-manager-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/mysqldb
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=pass
+    volumes:
+      # Ce volume persiste les fichiers uploadés
+      - ./stock-manager-api/uploads:/app/uploads
+
+  app-angular:
+    build: ./stock-manager-client
+    ports:
+      - "4200:80"
+    depends_on:
+      - app-spring
+
+volumes:
+  mysql_data:
