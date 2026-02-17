@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: gestion-produit-api
+
+  datasource:
+    url: jdbc:mysql://mysqldb:3306/mysqldb?useSSL=false&serverTimezone=UTC
+    username: user
+    password: pass 
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # crée ou met à jour les tables automatiquement
+    show-sql: true       # affiche les requêtes SQL dans la console
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect 
+
+jwt:
+  secret: ${JWT_SECRET:bWFDbGVTZWNyZXRlVWx0cmFTZWN1cmlzZWVQb3VySldUMTIzNDU2}
+  expiration: 36000000
